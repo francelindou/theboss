@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - The Boss Barbearia</title>
+    <style>
+        body, h1, h2, p, canvas, form, input, button {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1d1d1d;
+            color: #e0e0e0;
+            padding: 2rem;
+        }
+        header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5rem;
+            color: #ff6600;
+            margin-bottom: 0.5rem;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #2c2c2c;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            margin-bottom: 1rem;
+            color: #ff6600;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #ff6600;
+        }
+        input {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background: #222;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            background: #ff6600;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: #e55a00;
+            transform: scale(1.05);
+        }
+        @media (max-width: 768px) {
+            .section {
+                padding: 1.5rem;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+            .section h2 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Admin - The Boss Barbearia</h1>
+    </header>
+    <div class="container">
+        <div class="section">
+            <h2>Adicionar Valor</h2>
+            <form id="addValueForm">
+                <label for="date">Data:</label>
+                <input type="date" id="date" name="date" required>
+                <label for="value">Valor:</label>
+                <input type="number" id="value" name="value" required>
+                <button type="submit">Adicionar</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>Valores por Mês</h2>
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="section">
+            <h2>Adicionar Serviço</h2>
+            <form id="addServiceForm">
+                <label for="serviceName">Nome do Serviço:</label>
+                <input type="text" id="serviceName" name="serviceName" required>
+                <label for="serviceValue">Valor do Serviço:</label>
+                <input type="number" id="serviceValue" name="serviceValue" required>
+                <label for="serviceDuration">Duração do Serviço (minutos):</label>
+                <input type="number" id="serviceDuration" name="serviceDuration" required>
+                <button type="submit">Adicionar Serviço</button>
+            </form>
+        </div>
+
+        <div class="section">
+            <h2>Caixa Diário</h2>
+            <form id="cashForm">
+                <label for="cashDate">Data:</label>
+                <input type="date" id="cashDate" name="cashDate" required>
+                <label for="cashValue">Valor do Caixa:</label>
+                <input type="number" id="cashValue" name="cashValue" required>
+                <button type="submit">Registrar Caixa</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('addValueForm');
+            const serviceForm = document.getElementById('addServiceForm');
+            const cashForm = document.getElementById('cashForm');
+            const ctx = document.getElementById('myChart').getContext('2d');
+            let chart;
+
+            function loadChartData() {
+                const data = JSON.parse(localStorage.getItem('values')) || [];
+                const monthValues = Array(12).fill(0);
+
+                data.forEach(({ date, value }) => {
+                    const dateObj = new Date(date);
+                    const month = dateObj.getMonth();
+                    monthValues[month] += parseFloat(value);
+                });
+
+                if (chart) {
+                    chart.data.datasets[0].data = monthValues;
+                    chart.update();
+                } else {
+                    chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: [
+                                'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                                'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                            ],
+                            datasets: [{
+                                label: 'Valor Total',
+                                data: monthValues,
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            return `R$ ${tooltipItem.raw.toFixed(2)}`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        display: false
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Mês'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Valor (R$)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            loadChartData();
+
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                const dateInput = document.getElementById('date');
+                const valueInput = document.getElementById('value');
+                const dateValue = dateInput.value;
+                const valueAmount = valueInput.value;
+                if (dateValue && valueAmount) {
+                    const existingData = JSON.parse(localStorage.getItem('values')) || [];
+                    existingData.push({ date: dateValue, value: valueAmount });
+                    localStorage.setItem('values', JSON.stringify(existingData));
+                    dateInput.value = '';
+                    valueInput.value = '';
+                    loadChartData();
+                }
+            });
+
+            serviceForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const serviceNameInput = document.getElementById('serviceName');
+                const serviceValueInput = document.getElementById('serviceValue');
+                const serviceDurationInput = document.getElementById('serviceDuration');
+                const serviceName = serviceNameInput.value;
+                const serviceValue = serviceValueInput.value;
+                const serviceDuration = serviceDurationInput.value;
+                if (serviceName && serviceValue && serviceDuration) {
+                    const existingServices = JSON.parse(localStorage.getItem('services')) || [];
+                    existingServices.push({ name: serviceName, value: serviceValue, duration: serviceDuration });
+                    localStorage.setItem('services', JSON.stringify(existingServices));
+                    serviceNameInput.value = '';
+                    serviceValueInput.value = '';
+                    serviceDurationInput.value = '';
+                    alert('Serviço adicionado com sucesso!');
+                }
+            });
+
+            cashForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const cashDateInput = document.getElementById('cashDate');
+                const cashValueInput = document.getElementById('cashValue');
+                const cashDate = cashDateInput.value;
+                const cashValue = cashValueInput.value;
+                if (cashDate && cashValue) {
+                    const existingCash = JSON.parse(localStorage.getItem('cash')) || [];
+                    existingCash.push({ date: cashDate, value: cashValue });
+                    localStorage.setItem('cash', JSON.stringify(existingCash));
+                    cashDateInput.value = '';
+                    cashValueInput.value = '';
+                    alert('Caixa registrado com sucesso!');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

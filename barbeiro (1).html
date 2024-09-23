@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Boss Barbearia</title>
+    <style>
+        /* Reset básico */
+        body, h1, h2, p, ul, li, form, input, button, select {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #1d1d1d, #3a3a3a);
+            color: #e0e0e0;
+        }
+
+        header {
+            background: #0f0f0f;
+            color: #e0e0e0;
+            padding: 1rem 0;
+            border-bottom: 3px solid #ff6600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ff6600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+        }
+
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+
+        nav ul li a {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #ff6600;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.8);
+        }
+
+        main {
+            padding: 2rem 1rem;
+            background: #2c2c2c;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-top: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: #e0e0e0;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        footer {
+            background: #0f0f0f;
+            color: #e0e0e0;
+            padding: 1rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            border-top: 3px solid #ff6600;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+    <script>
+        function checkPassword() {
+            const password = prompt("Digite a senha para acessar a área Admin:");
+            if (password === "theboss") {
+                window.location.href = "admin.html"; // Redireciona para a página admin
+            } else {
+                alert("Senha incorreta!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>The Boss Barbearia</h1>
+            <nav>
+                <ul>
+                    <li><a href="#agendar" id="agendar-link">Agendar Horário</a></li>
+                    <li><a href="javascript:void(0);" onclick="checkPassword()" id="admin-link">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="agendar" class="container">
+            <h2>Agende seu horário</h2>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeYJh5NqPN_sSMamnobEGlXLKnEWcc_09JyJY3VTISkz7yxjA/viewform?embedded=true" width="100%" height="600px" frameborder="0" marginheight="0" marginwidth="0">Carregando…</iframe>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 The Boss Barbearia. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>
